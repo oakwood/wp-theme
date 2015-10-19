@@ -120,4 +120,31 @@ class Admin extends \Oakwood\AbstractAdmin {
 
 ## Cron
 
-Not yet documented
+To implement the Cron class extend Oakwood\AbstractCron in you theme.
+Preferably in /wp-content/themes/[your-theme]/src/[your-namespace]/Cron.php
+
+The class creates four schedules:
+* 15min_schedule
+* hourly_schedule
+* twicedaily_schedule
+* daily_schedule
+
+Add your functions and hook them to a schedule in the get_actions method.
+
+```php
+namespace MyNamespace;
+
+class Admin extends \Oakwood\AbstractCron {
+
+	public function get_actions( $actions = array() ) {
+		$actions['will_run_daily'] => 'daily_schedule';
+
+		return $actions;
+	}
+
+	public function will_run_daily() {
+		update_option( 'ran_daily', current_time( 'mysql' ) );
+	}
+
+}
+```

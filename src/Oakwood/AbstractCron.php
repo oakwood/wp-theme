@@ -25,15 +25,24 @@ abstract class AbstractCron {
 	);
 
 	protected $actions = array(
-		'clear_transients' => 'owc_clear_transients'
+		'clear_transients' => 'daily_schedule'
+	);
+
+	protected $schedules = array(
+		'15min',
+		'hourly',
+		'twicedaily',
+		'daily'
 	);
 
 	public function __construct() {
-		$this->__hooks_construct();
-		
-		if ( ! wp_next_scheduled( 'owc_clear_transients' ) ) {
-			wp_schedule_event( time(), 'daily', 'owc_clear_transients' );
+		foreach ( $this->schedules as $schedule ) {
+			if ( ! wp_next_scheduled( $schedule . '_schedule' ) ) {
+				wp_schedule_event( time(), $schedule, $schedule . '_schedule' );
+			}
 		}
+
+		$this->__hooks_construct();
 	}
 
 	/*
